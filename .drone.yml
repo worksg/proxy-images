@@ -1,0 +1,23 @@
+workspace:
+  base: /root
+  path: src/proxy-image
+
+kind: pipeline
+name: linux-amd64
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+# https://github.com/drone-plugins/drone-docker/blob/master/cmd/drone-docker/main.go
+- name: build-proxy-image 
+  image: plugins/docker
+  settings:
+    username: 
+      from_secret: docker_username
+    password: 
+      from_secret: docker_password
+    repo: worksg/wg-proxy
+    tags: latest
+    dockerfile: ./Dockerfile
