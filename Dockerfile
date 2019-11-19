@@ -2,6 +2,7 @@
 FROM alpine:edge as unbound_builder
 
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories
+
 RUN adduser \
     -S -H -D \
     -h /home/builder \
@@ -92,6 +93,9 @@ FROM alpine:edge
 
 LABEL maintainer "worksg <571940753@qq.com>"
 
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories \
+    && echo "http://nginx.org/packages/mainline/alpine/v3.10/main" >> /etc/apk/repositories
+
 # == WireGuard ==
 RUN apk add -U wireguard-tools supervisor
 
@@ -100,8 +104,11 @@ COPY --from=unbound_builder /home/builder/packages/builder/x86_64/* /unbound-mai
 RUN set -ex \
     && apk add --allow-untrusted /unbound-main-apk/*.apk && rm -rf /unbound-main-apk \
     && apk --update add --no-cache \
-    ca-certificates iproute2 ipset perl knot-utils net-tools dnsmasq curl wget netcat-openbsd moreutils gawk \
-    dhclient libqrencode ip6tables iptables
+    ca-certificates iproute2 ipset perl knot-utils net-tools dnsmasq curl wget netcat-openbsd moreutils \
+    dhclient libqrencode ip6tables iptables \
+    # https://nginx.org/en/linux_packages.html#Alpine
+    && curl -o /etc/apk/keys/nginx_signing.rsa.pub https://nginx.org/keys/nginx_signing.rsa.pub \
+    && apk add --no-cache nginx
 
 RUN set -ex \
     && apk upgrade \
