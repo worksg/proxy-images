@@ -40,7 +40,7 @@ FROM golang:alpine as go_builder
 
 RUN apk --update add --no-cache tar git wget curl
 
-ENV DNSPROXY_VERSION=0.20.1
+ENV DNSPROXY_VERSION=0.23.5
 
 ENV GO111MODULE=on \
     CGO_ENABLED=0
@@ -137,7 +137,7 @@ ARG TZ='Asia/Hong_Kong'
 
 ENV TZ=$TZ \
     SS_LIBEV_VERSION=3.3.3 \
-    KCP_VERSION=20191112
+    KCP_VERSION=20191229
 
 ENV KCP_DOWNLOAD_URL="https://github.com/xtaci/kcptun/releases/download/v${KCP_VERSION}/kcptun-linux-amd64-${KCP_VERSION}.tar.gz" \
     SS_DOWNLOAD_URL="https://github.com/shadowsocks/shadowsocks-libev/releases/download/v${SS_LIBEV_VERSION}/shadowsocks-libev-${SS_LIBEV_VERSION}.tar.gz" \
@@ -177,13 +177,13 @@ COPY Script_Util.sh /Script_Util.sh
 RUN chmod a+x /Script_Util.sh && /Script_Util.sh
 
 # == GOST UDPSPEEDER UDP2RAW V2RAY ==
-ENV GOST_VERSION=2.8.1 \
+ENV GOST_VERSION=2.8.2 \
     UDP2RAW_VERSION=20181113.0 \
-    V2RAY_VERSION=4.21.3 \
+    V2RAY_VERSION=4.22.0 \
     UDPSPEEDER_VERSION=20190121.0 \
     V2RAY_PLUGIN_VERSION=1.2.0
 
-ENV GOST_DOWNLOAD_URL="https://github.com/ginuerzh/gost/releases/download/v${GOST_VERSION}/gost_${GOST_VERSION}_linux_amd64.tar.gz" \
+ENV GOST_DOWNLOAD_URL="https://github.com/ginuerzh/gost/releases/download/v${GOST_VERSION}/gost-linux-amd64-${GOST_VERSION}.gz" \
     UDP2RAW_DOWNLOAD_URL="https://github.com/wangyu-/udp2raw-tunnel/releases/download/${UDP2RAW_VERSION}/udp2raw_binaries.tar.gz" \
     V2RAY_DOWNLOAD_URL="https://github.com/v2ray/v2ray-core/releases/download/v${V2RAY_VERSION}/v2ray-linux-64.zip" \
     UDPSPEEDER_DOWNLOAD_URL="https://github.com/wangyu-/UDPspeeder/releases/download/${UDPSPEEDER_VERSION}/speederv2_binaries.tar.gz" \
@@ -191,11 +191,9 @@ ENV GOST_DOWNLOAD_URL="https://github.com/ginuerzh/gost/releases/download/v${GOS
 
 RUN set -ex \
     && curl -LO ${GOST_DOWNLOAD_URL} \
-    && mkdir gost_linux_amd64 \
-    && tar zxf gost_${GOST_VERSION}_linux_amd64.tar.gz -C gost_linux_amd64 \
-    && (cd gost_linux_amd64/gost_${GOST_VERSION}_linux_amd64 \
-    && chmod +x gost \
-    && mv gost /usr/bin/gost) 
+    && gzip -d gost-linux-amd64-${GOST_VERSION}.gz \
+    && chmod +x gost-linux-amd64-${GOST_VERSION} \
+    && mv gost-linux-amd64-${GOST_VERSION} /usr/bin/gost
 
 RUN set -ex \
     && curl -LO ${UDP2RAW_DOWNLOAD_URL} \
@@ -268,10 +266,7 @@ RUN apk del .build-deps \
     udpspeeder_linux_amd64 \
     v2ray-linux-64.zip \
     udp2raw_binaries.tar.gz \
-    gost_${GOST_VERSION}_linux_amd64.tar.gz \
     speederv2_binaries.tar.gz \
-    overture_linux_amd64 \
-    overture-linux-amd64.zip \
     v2ray-plugin_linux_amd64 \
     v2ray-plugin-linux-amd64-v${V2RAY_PLUGIN_VERSION}.tar.gz \
     /var/cache/apk/* ~/.gitconfig ~/.wget-hsts
