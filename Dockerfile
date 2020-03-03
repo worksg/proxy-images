@@ -40,7 +40,7 @@ FROM golang:alpine as go_builder
 
 RUN apk --update add --no-cache tar git wget curl
 
-ENV DNSPROXY_VERSION=0.23.5
+ENV DNSPROXY_VERSION=0.23.7
 
 ENV GO111MODULE=on \
     CGO_ENABLED=0
@@ -136,8 +136,8 @@ SHELL ["/bin/bash", "-c"]
 ARG TZ='Asia/Hong_Kong'
 
 ENV TZ=$TZ \
-    SS_LIBEV_VERSION=3.3.3 \
-    KCP_VERSION=20191229
+    SS_LIBEV_VERSION=3.3.4 \
+    KCP_VERSION=20200226
 
 ENV KCP_DOWNLOAD_URL="https://github.com/xtaci/kcptun/releases/download/v${KCP_VERSION}/kcptun-linux-amd64-${KCP_VERSION}.tar.gz" \
     SS_DOWNLOAD_URL="https://github.com/shadowsocks/shadowsocks-libev/releases/download/v${SS_LIBEV_VERSION}/shadowsocks-libev-${SS_LIBEV_VERSION}.tar.gz" \
@@ -177,11 +177,11 @@ COPY Script_Util.sh /Script_Util.sh
 RUN chmod a+x /Script_Util.sh && /Script_Util.sh
 
 # == GOST UDPSPEEDER UDP2RAW V2RAY ==
-ENV GOST_VERSION=2.8.2 \
+ENV GOST_VERSION=2.10.1 \
     UDP2RAW_VERSION=20181113.0 \
-    V2RAY_VERSION=4.22.0 \
+    V2RAY_VERSION=4.22.1 \
     UDPSPEEDER_VERSION=20190121.0 \
-    V2RAY_PLUGIN_VERSION=1.2.0
+    V2RAY_PLUGIN_VERSION=1.3.0
 
 ENV GOST_DOWNLOAD_URL="https://github.com/ginuerzh/gost/releases/download/v${GOST_VERSION}/gost-linux-amd64-${GOST_VERSION}.gz" \
     UDP2RAW_DOWNLOAD_URL="https://github.com/wangyu-/udp2raw-tunnel/releases/download/${UDP2RAW_VERSION}/udp2raw_binaries.tar.gz" \
