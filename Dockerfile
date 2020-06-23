@@ -14,7 +14,7 @@ RUN adduser \
     echo "builder:$(dd if=/dev/urandom bs=24 count=1 status=none | base64)" | chpasswd
 
 RUN set -ex \
-    && apk --update add --no-cache alpine-sdk coreutils cmake bash wget git \
+    && apk --update add --no-cache alpine-sdk coreutils cmake bash wget git sudo \
     && echo "builder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
     && mkdir -p /home/builder/packages  \
     && chown builder:abuild /home/builder/packages /home/builder
@@ -40,7 +40,7 @@ FROM golang:alpine as go_builder
 
 RUN apk --update add --no-cache tar git wget curl
 
-ENV DNSPROXY_VERSION=0.23.7
+ENV DNSPROXY_VERSION=0.29.0
 
 ENV GO111MODULE=on \
     CGO_ENABLED=0
@@ -94,7 +94,7 @@ FROM alpine:edge
 LABEL maintainer "worksg <571940753@qq.com>"
 
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories \
-    && echo "http://nginx.org/packages/mainline/alpine/v3.10/main" >> /etc/apk/repositories
+    && echo "http://nginx.org/packages/mainline/alpine/v3.12/main" >> /etc/apk/repositories
 
 # == WireGuard ==
 RUN apk add -U wireguard-tools supervisor
@@ -137,7 +137,7 @@ ARG TZ='Asia/Hong_Kong'
 
 ENV TZ=$TZ \
     SS_LIBEV_VERSION=3.3.4 \
-    KCP_VERSION=20200226
+    KCP_VERSION=20200409
 
 ENV KCP_DOWNLOAD_URL="https://github.com/xtaci/kcptun/releases/download/v${KCP_VERSION}/kcptun-linux-amd64-${KCP_VERSION}.tar.gz" \
     SS_DOWNLOAD_URL="https://github.com/shadowsocks/shadowsocks-libev/releases/download/v${SS_LIBEV_VERSION}/shadowsocks-libev-${SS_LIBEV_VERSION}.tar.gz" \
@@ -177,11 +177,11 @@ COPY Script_Util.sh /Script_Util.sh
 RUN chmod a+x /Script_Util.sh && /Script_Util.sh
 
 # == GOST UDPSPEEDER UDP2RAW V2RAY ==
-ENV GOST_VERSION=2.10.1 \
+ENV GOST_VERSION=2.11.1 \
     UDP2RAW_VERSION=20181113.0 \
-    V2RAY_VERSION=4.22.1 \
+    V2RAY_VERSION=4.25.0 \
     UDPSPEEDER_VERSION=20190121.0 \
-    V2RAY_PLUGIN_VERSION=1.3.0
+    V2RAY_PLUGIN_VERSION=1.3.1
 
 ENV GOST_DOWNLOAD_URL="https://github.com/ginuerzh/gost/releases/download/v${GOST_VERSION}/gost-linux-amd64-${GOST_VERSION}.gz" \
     UDP2RAW_DOWNLOAD_URL="https://github.com/wangyu-/udp2raw-tunnel/releases/download/${UDP2RAW_VERSION}/udp2raw_binaries.tar.gz" \
@@ -271,4 +271,4 @@ RUN apk del .build-deps \
     v2ray-plugin-linux-amd64-v${V2RAY_PLUGIN_VERSION}.tar.gz \
     /var/cache/apk/* ~/.gitconfig ~/.wget-hsts
 
-CMD [ "/bin/bash", "-c", "tail -f /dev/null" ]
+CMD [ "/bin/bash", "-c", "sleep infinity" ]

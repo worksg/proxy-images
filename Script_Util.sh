@@ -56,7 +56,7 @@ if ! type ss-tproxy 2>/dev/null; then
 	chmod 0755 /usr/local/bin/ss-tproxy
 	chown root:root /usr/local/bin/ss-tproxy
 	mkdir -m 0755 -p /etc/ss-tproxy
-	cp -af ss-tproxy.conf gfwlist* chnroute* /etc/ss-tproxy
+	cp -af ss-tproxy.conf gfwlist* chnroute* ignlist* /etc/ss-tproxy
 	chmod 0644 /etc/ss-tproxy/* && chown -R root:root /etc/ss-tproxy
     popd
 
